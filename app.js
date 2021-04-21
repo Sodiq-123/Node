@@ -1,8 +1,33 @@
-var http = require('http');
+//require the mongoClient from mongodb module
+var MongoClient = require('mongodb').MongoClient;
 
-http.createServer(function (req, res) {
-    res.writeHead(200, { 'Content-Type': 'text/plain' });
-    res.end('Hello World\n');
-}).listen(8080, 'localhost');
+//mongodb configs
+var connectionUrl = 'mongodb://localhost:27017/myproject',
+    sampleCollection = 'chapters';
 
-console.log('Server running at http://localhost:8080');
+//We need to insert these chapters into mongoDB
+var chapters = [{
+    'Title': 'Snow Crash',
+    'Author': 'Neal Stephenson'
+}, {
+    'Title': 'Snow Crash',
+    'Author': 'Neal Stephenson'
+}];
+
+MongoClient.connect(connectionUrl, function (err, db) {
+
+    console.log("Connected correctly to server");
+
+    // Get some collection
+    var collection = db.collection(sampleCollection);
+
+    collection.insert(chapters, function (error, result) {
+        //here result will contain an array of records inserted
+        if (!error) {
+            console.log("Success :" + result.ops.length + " chapters inserted!");
+        } else {
+            console.log("Some error was encountered!");
+        }
+        db.close();
+    });
+});
