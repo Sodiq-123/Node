@@ -14,20 +14,20 @@ var chapters = [{
     'Author': 'Neal Stephenson'
 }];
 
-MongoClient.connect(connectionUrl, function (err, db) {
-
+MongoClient.connect(connectionUrl, function (err, client) {
+    var db = client.db('myproject')
     console.log("Connected correctly to server");
 
     // Get some collection
     var collection = db.collection(sampleCollection);
 
-    collection.insert(chapters, function (error, result) {
+    collection.insertMany(chapters, function (error, result) {
         //here result will contain an array of records inserted
         if (!error) {
             console.log("Success :" + result.ops.length + " chapters inserted!");
         } else {
             console.log("Some error was encountered!");
         }
-        db.close();
+        client.close();
     });
 });
